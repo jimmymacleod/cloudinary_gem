@@ -313,6 +313,19 @@ class Cloudinary::Utils
     Digest::SHA1.hexdigest("#{to_sign}#{api_secret}")
   end
 
+  # Returns a JSON array as String
+  # @api private
+  # @param [Hash|String|Array<Hash>] data
+  # @return [String|nil] a JSON array string or `nil` if data is `nil`
+  def self.json_array(data)
+    return nil if data.nil?
+
+    data = JSON.parse(data) if data.is_a?(String)
+    data = [data] unless data.is_a?(Array)
+    data = yield data if block_given?
+    JSON.generate(data)
+  end
+
   def self.generate_responsive_breakpoints_string(breakpoints)
     return nil if breakpoints.nil?
     breakpoints = build_array(breakpoints)
